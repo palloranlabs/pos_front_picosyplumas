@@ -2,9 +2,9 @@ import api from './client';
 import type { Sale } from '../types/models.types';
 
 interface CreateSaleRequest {
-    items: { product_id: number; quantity: string; discount_percent: string | number }[];
+    items: { product_id: number; quantity: number; discount_percent: number }[];
     payment_method: 'cash' | 'card' | 'mixed';
-    cash_received?: string;
+    cash_received?: number;
     master_password?: string | null;
 }
 

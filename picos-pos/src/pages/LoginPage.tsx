@@ -22,51 +22,83 @@ export const LoginPage: React.FC = () => {
 
         try {
             const data = await login(username, password);
-            setTokens(data);
+            setTokens(data, username);
             navigate('/pos');
         } catch (err: any) {
-            setError('Invalid credentials. Please try again.');
+            console.error("Login failed", err);
+            const errorDetail = err.response?.data?.detail;
+            const errorMessage = typeof errorDetail === 'string'
+                ? errorDetail
+                : 'Credenciales inválidas. Intente de nuevo.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-                <img src="/logo.webp" alt="Picos y Plumas" className="mx-auto h-24 w-auto" />
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-brand-navy">
-                    Sign in to POS
-                </h2>
+        <div className="min-h-screen bg-gradient-to-br from-brand-navy via-brand-blue to-brand-purple flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Background Decorations */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-blue opacity-20 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 right-0 w-64 h-64 bg-brand-purple opacity-20 rounded-full blur-3xl"></div>
             </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+                <div className="bg-white/95 backdrop-blur-sm py-8 px-4 shadow-2xl rounded-2xl sm:px-10 border border-white/20 transform transition-all hover:scale-[1.01] duration-500">
+                    <div className="text-center mb-8">
+                        <div className="inline-block p-3 rounded-full bg-blue-50 mb-4 shadow-inner">
+                            <img src="/logo.webp" alt="Picos y Plumas" className="h-20 w-auto" />
+                        </div>
+                        <h2 className="text-3xl font-extrabold text-black font-sans tracking-tight">
+                            Iniciar Sesión
+                        </h2>
+                        <p className="mt-2 text-sm text-black">
+                            Picos y Plumas POS
+                        </p>
+                    </div>
+
                     <form className="space-y-6" onSubmit={handleLogin}>
                         <Input
-                            label="Username"
+                            label="Usuario"
                             type="text"
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            icon={<User size={18} />}
+                            icon={<User size={18} className="text-brand-blue" />}
+                            className="bg-gray-50 border-gray-200 focus:bg-white transition-colors"
                         />
 
                         <Input
-                            label="Password"
+                            label="Contraseña"
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            icon={<Lock size={18} />}
+                            icon={<Lock size={18} className="text-brand-blue" />}
+                            className="bg-gray-50 border-gray-200 focus:bg-white transition-colors"
                         />
 
-                        {error && <div className="text-brand-red text-sm text-center">{error}</div>}
+                        {error && (
+                            <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-brand-red text-sm text-center font-medium animate-pulse">
+                                {error}
+                            </div>
+                        )}
 
-                        <Button type="submit" className="w-full" isLoading={isLoading}>
-                            Sign in
+                        <Button
+                            type="submit"
+                            className="w-full py-3 text-lg font-bold shadow-lg hover:shadow-xl transition-all transform active:scale-95 bg-gradient-to-r from-brand-blue to-brand-navy border-none"
+                            isLoading={isLoading}
+                        >
+                            Entrar
                         </Button>
                     </form>
+                </div>
+
+                <div className="mt-8 text-center">
+                    <p className="text-white/80 text-sm font-medium drop-shadow-md">
+                        &copy; 2026 Picos y Plumas. Todos los derechos reservados.
+                    </p>
                 </div>
             </div>
         </div>

@@ -91,9 +91,9 @@ export const ProductManager: React.FC = () => {
     return (
         <div className="p-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Product Management</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Gestión de Productos</h1>
                 <Button onClick={handleCreate} variant="primary">
-                    <Plus size={20} className="mr-2" /> Add Product
+                    <Plus size={20} className="mr-2" /> Agregar Producto
                 </Button>
             </div>
 
@@ -101,9 +101,9 @@ export const ProductManager: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -126,19 +126,19 @@ export const ProductManager: React.FC = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-96 shadow-xl">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">{editingProduct ? 'Edit Product' : 'New Product'}</h3>
+                            <h3 className="text-lg font-bold">{editingProduct ? 'Editar Producto' : 'Nuevo Producto'}</h3>
                             <button onClick={() => setIsModalOpen(false)}><X size={20} className="text-gray-400" /></button>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <Input
-                                label="Product Name"
+                                label="Nombre del Producto"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
                             />
                             <Input
-                                label="Price"
+                                label="Precio"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
                                 required
@@ -147,9 +147,9 @@ export const ProductManager: React.FC = () => {
 
                             {editingProduct && (
                                 <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
-                                    <p className="text-xs text-yellow-800 mb-2 font-bold">Security Check Required</p>
+                                    <p className="text-xs text-yellow-800 mb-2 font-bold">Verificación de Seguridad Requerida</p>
                                     <Input
-                                        label="Master Password"
+                                        label="Contraseña Maestra"
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -161,8 +161,8 @@ export const ProductManager: React.FC = () => {
                             {error && <p className="text-red-500 text-sm">{error}</p>}
 
                             <div className="flex justify-end space-x-2 pt-2">
-                                <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                                <Button type="submit" isLoading={isLoading}>Save</Button>
+                                <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                                <Button type="submit" isLoading={isLoading}>Guardar</Button>
                             </div>
                         </form>
                     </div>

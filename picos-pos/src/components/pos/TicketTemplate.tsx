@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Sale } from '../../types/models.types';
+import { parseDecimal } from '../../utils/currency';
 
 interface Props {
     sale: Sale | null;
@@ -36,6 +37,7 @@ export const TicketTemplate: React.FC<Props> = ({ sale }) => {
             </div>
 
             <div className="text-right text-[10px] mt-1">
+                {parseDecimal(sale.card_amount) > 0 && <p>Tarjeta: ${sale.card_amount}</p>}
                 <p>Efectivo: ${sale.cash_received}</p>
                 <p>Cambio: ${sale.change_given}</p>
             </div>

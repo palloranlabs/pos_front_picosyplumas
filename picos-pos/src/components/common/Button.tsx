@@ -17,15 +17,15 @@ export const Button: React.FC<ButtonProps> = ({
     disabled,
     ...props
 }) => {
-    const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95";
 
     const variants = {
-        primary: "bg-brand-blue text-white hover:bg-opacity-90 focus:ring-brand-blue",
-        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500",
-        danger: "bg-brand-red text-white hover:bg-opacity-90 focus:ring-brand-red",
-        success: "bg-brand-green text-white hover:bg-opacity-90 focus:ring-brand-green",
-        warning: "bg-brand-yellow text-black hover:bg-opacity-90 focus:ring-brand-yellow",
-        ghost: "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+        primary: "bg-brand-blue text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-blue",
+        secondary: "bg-gray-100 text-gray-900 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:bg-gray-200 focus:ring-gray-500",
+        danger: "bg-brand-red text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-red",
+        success: "bg-brand-green text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-green",
+        warning: "bg-brand-yellow text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-yellow",
+        ghost: "bg-transparent text-gray-700 hover:bg-gray-100 hover:text-black hover:shadow-sm focus:ring-gray-500",
     };
 
     const sizes = {

@@ -44,7 +44,7 @@ export const ProductGrid: React.FC = () => {
         <div className="flex flex-col h-full">
             <div className="mb-4">
                 <Input
-                    placeholder="Search products..."
+                    placeholder="Buscar productos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     icon={<Search size={18} />}

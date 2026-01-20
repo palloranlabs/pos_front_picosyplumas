@@ -42,8 +42,9 @@ api.interceptors.response.use(
                     refresh_token: refreshToken
                 });
 
-                // Update Store
-                useAuthStore.getState().setTokens(data);
+                // Update Store keeping current user
+                const currentUser = useAuthStore.getState().user || "Unknown";
+                useAuthStore.getState().setTokens(data, currentUser);
 
                 // Retry original request
                 originalRequest.headers.Authorization = `Bearer ${data.access_token}`;

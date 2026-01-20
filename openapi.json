@@ -87,6 +87,100 @@
                 }
             }
         },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register User",
+                "description": "Register a new user. Only admin can create users.",
+                "operationId": "register_user_api_v1_auth_register_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/change-password": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Change Password",
+                "description": "Change user password. Only admin can change passwords.\nIf user_id is provided, changes that user's password.\nIf user_id is not provided, changes admin's own password.",
+                "operationId": "change_password_api_v1_auth_change_password_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Change Password Api V1 Auth Change Password Post"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/sales/": {
             "post": {
                 "tags": [
@@ -470,8 +564,79 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "boolean",
-                                    "title": "Response Close Session Api V1 Cash Close Post"
+                                    "$ref": "#/components/schemas/CashSessionCloseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/config/master-password": {
+            "get": {
+                "tags": [
+                    "config"
+                ],
+                "summary": "Get Current Master Password",
+                "description": "Get current master password. Only admin can view it.",
+                "operationId": "get_current_master_password_api_v1_config_master_password_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MasterPasswordResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "config"
+                ],
+                "summary": "Update Master Password",
+                "description": "Update master password. Only admin can change it.\nThis password is used for discounts and refunds authorization.",
+                "operationId": "update_master_password_api_v1_config_master_password_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MasterPasswordUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Update Master Password Api V1 Config Master Password Post"
                                 }
                             }
                         }
@@ -611,6 +776,127 @@
                 ],
                 "title": "Body_refresh_token_api_v1_auth_refresh_token_post"
             },
+            "CashSessionCloseResponse": {
+                "properties": {
+                    "session_id": {
+                        "type": "integer",
+                        "title": "Session Id"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "title": "User Id"
+                    },
+                    "opened_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Opened At"
+                    },
+                    "closed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Closed At"
+                    },
+                    "opening_balance": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Opening Balance"
+                    },
+                    "closing_balance": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Closing Balance"
+                    },
+                    "tickets": {
+                        "items": {
+                            "$ref": "#/components/schemas/TicketSummary"
+                        },
+                        "type": "array",
+                        "title": "Tickets"
+                    },
+                    "total_sales_cash": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Total Sales Cash"
+                    },
+                    "total_sales_card": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Total Sales Card"
+                    },
+                    "total_refunded_cash": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Total Refunded Cash"
+                    },
+                    "total_refunded_card": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Total Refunded Card"
+                    },
+                    "expected_cash_in_drawer": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Expected Cash In Drawer"
+                    },
+                    "actual_cash_in_drawer": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Actual Cash In Drawer"
+                    },
+                    "discrepancy": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Discrepancy"
+                    },
+                    "has_discrepancy": {
+                        "type": "boolean",
+                        "title": "Has Discrepancy"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "session_id",
+                    "user_id",
+                    "opened_at",
+                    "closed_at",
+                    "opening_balance",
+                    "closing_balance",
+                    "tickets",
+                    "total_sales_cash",
+                    "total_sales_card",
+                    "total_refunded_cash",
+                    "total_refunded_card",
+                    "expected_cash_in_drawer",
+                    "actual_cash_in_drawer",
+                    "discrepancy",
+                    "has_discrepancy"
+                ],
+                "title": "CashSessionCloseResponse"
+            },
+            "ChangePasswordRequest": {
+                "properties": {
+                    "user_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "User Id"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "title": "New Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "new_password"
+                ],
+                "title": "ChangePasswordRequest"
+            },
             "HTTPValidationError": {
                 "properties": {
                     "detail": {
@@ -623,6 +909,32 @@
                 },
                 "type": "object",
                 "title": "HTTPValidationError"
+            },
+            "MasterPasswordResponse": {
+                "properties": {
+                    "master_password": {
+                        "type": "string",
+                        "title": "Master Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "master_password"
+                ],
+                "title": "MasterPasswordResponse"
+            },
+            "MasterPasswordUpdate": {
+                "properties": {
+                    "new_master_password": {
+                        "type": "string",
+                        "title": "New Master Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "new_master_password"
+                ],
+                "title": "MasterPasswordUpdate"
             },
             "PaymentMethodEnum": {
                 "type": "string",
@@ -815,6 +1127,10 @@
                         "type": "integer",
                         "title": "Id"
                     },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
                     "ticket_number": {
                         "type": "string",
                         "title": "Ticket Number"
@@ -842,6 +1158,11 @@
                         "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
                         "title": "Cash Received"
                     },
+                    "card_amount": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Card Amount"
+                    },
                     "change_given": {
                         "type": "string",
                         "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
@@ -867,12 +1188,14 @@
                 "type": "object",
                 "required": [
                     "id",
+                    "username",
                     "ticket_number",
                     "subtotal",
                     "tax_amount",
                     "total_amount",
                     "payment_method",
                     "cash_received",
+                    "card_amount",
                     "change_given",
                     "is_refunded",
                     "created_at",
@@ -1014,6 +1337,45 @@
                 ],
                 "title": "SaleItemCreate"
             },
+            "TicketSummary": {
+                "properties": {
+                    "ticket_number": {
+                        "type": "string",
+                        "title": "Ticket Number"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "total_amount": {
+                        "type": "string",
+                        "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)",
+                        "title": "Total Amount"
+                    },
+                    "payment_method": {
+                        "$ref": "#/components/schemas/PaymentMethodEnum"
+                    },
+                    "is_refunded": {
+                        "type": "boolean",
+                        "title": "Is Refunded"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "ticket_number",
+                    "username",
+                    "total_amount",
+                    "payment_method",
+                    "is_refunded",
+                    "created_at"
+                ],
+                "title": "TicketSummary"
+            },
             "Token": {
                 "properties": {
                     "access_token": {
@@ -1042,6 +1404,82 @@
                     "token_type"
                 ],
                 "title": "Token"
+            },
+            "User": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "is_active": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Active",
+                        "default": true
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/UserRole",
+                        "default": "user"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username",
+                    "id"
+                ],
+                "title": "User"
+            },
+            "UserCreate": {
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "is_active": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Active",
+                        "default": true
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/UserRole",
+                        "default": "user"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "title": "UserCreate"
+            },
+            "UserRole": {
+                "type": "string",
+                "enum": [
+                    "admin",
+                    "user"
+                ],
+                "title": "UserRole"
             },
             "ValidationError": {
                 "properties": {

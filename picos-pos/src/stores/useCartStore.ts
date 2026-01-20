@@ -14,7 +14,11 @@ interface CartState {
     removeItem: (productId: number) => void;
     updateQuantity: (productId: number, quantity: string) => void;
     updateDiscount: (productId: number, discount: string) => void;
+    setMasterPassword: (password: string) => void; // Store temporarily for API call
     clearCart: () => void;
+
+    // State
+    masterPassword?: string;
 
     // Computed (Calculated on the fly in components or here if we cache)
     // We'll provide helpers
@@ -23,6 +27,7 @@ interface CartState {
 
 export const useCartStore = create<CartState>((set, get) => ({
     items: [],
+    masterPassword: undefined,
 
     addItem: (product) => set((state) => {
         const existing = state.items.find(i => i.product.id === product.id);
@@ -48,7 +53,9 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: state.items.map(i => i.product.id === productId ? { ...i, discount_percent: discount } : i)
     })),
 
-    clearCart: () => set({ items: [] }),
+    setMasterPassword: (password) => set({ masterPassword: password }),
+
+    clearCart: () => set({ items: [], masterPassword: undefined }),
 
     getMetaData: () => {
         const { items } = get();

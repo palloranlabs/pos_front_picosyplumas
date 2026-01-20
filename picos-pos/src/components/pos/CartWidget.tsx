@@ -17,10 +17,10 @@ export const CartWidget: React.FC = () => {
         <div className="flex flex-col h-full bg-white">
             {/* Header */}
             <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-800">Current Sale</h2>
+                <h2 className="text-xl font-bold text-gray-800">Venta Actual</h2>
                 {items.length > 0 && (
                     <Button variant="ghost" size="sm" onClick={clearCart} className="text-red-500 hover:text-red-700 hover:bg-red-50">
-                        <Trash2 size={16} className="mr-1" /> Clear
+                        <Trash2 size={16} className="mr-1" /> Limpiar
                     </Button>
                 )}
             </div>
@@ -29,8 +29,8 @@ export const CartWidget: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {items.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-gray-400">
-                        <p>Cart is empty</p>
-                        <p className="text-sm">Select products to begin</p>
+                        <p>Carrito vacío</p>
+                        <p className="text-sm">Seleccione productos</p>
                     </div>
                 ) : (
                     items.map((item) => {
@@ -87,7 +87,7 @@ export const CartWidget: React.FC = () => {
                     <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-gray-600">
-                    <span>Tax (16%)</span>
+                    <span>IVA (16%)</span>
                     <span>{formatCurrency(tax)}</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t border-gray-200">
@@ -96,11 +96,11 @@ export const CartWidget: React.FC = () => {
                 </div>
 
                 <Button
-                    className="w-full mt-4 bg-gradient-to-r from-brand-yellow to-brand-red py-4 text-xl font-bold shadow-lg transform active:scale-95 transition-all"
+                    className="w-full mt-4 bg-gradient-to-r from-brand-yellow to-brand-red py-4 text-xl font-bold shadow-lg transform active:scale-95 transition-all drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
                     disabled={items.length === 0}
                     onClick={() => setShowPayModal(true)}
                 >
-                    PAY {formatCurrency(total)}
+                    PAGAR {formatCurrency(total)}
                 </Button>
             </div>
 
