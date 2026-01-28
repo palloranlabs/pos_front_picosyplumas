@@ -15,6 +15,7 @@ export const ProductManager: React.FC = () => {
     // Form State
     const [name, setName] = useState('');
     const [barcode, setBarcode] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
     const [price, setPrice] = useState('');
     const [password, setPassword] = useState(''); // Master Password
     const [error, setError] = useState('');
@@ -33,6 +34,7 @@ export const ProductManager: React.FC = () => {
         setEditingProduct(p);
         setName(p.name);
         setBarcode(p.barcode || '');
+        setImageUrl(p.image_url || '');
         setPrice(p.base_price);
         setPassword('');
         setError('');
@@ -43,6 +45,7 @@ export const ProductManager: React.FC = () => {
         setEditingProduct(null);
         setName('');
         setBarcode('');
+        setImageUrl('');
         setPrice('');
         setPassword('');
         setError('');
@@ -67,6 +70,7 @@ export const ProductManager: React.FC = () => {
                 await updateProduct(editingProduct.id, {
                     name,
                     barcode: barcode || undefined,
+                    image_url: imageUrl || undefined,
                     base_price: price,
                     master_password: password
                 });
@@ -74,6 +78,7 @@ export const ProductManager: React.FC = () => {
                 await createProduct({
                     name,
                     barcode: barcode || undefined,
+                    image_url: imageUrl || undefined,
                     base_price: price,
                     is_active: true
                 });
@@ -110,7 +115,14 @@ export const ProductManager: React.FC = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {products.map(p => (
                             <tr key={p.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{p.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
+                                    {p.image_url ? (
+                                        <img src={p.image_url} alt="" className="h-8 w-8 rounded object-cover mr-3 bg-gray-100" />
+                                    ) : (
+                                        <div className="h-8 w-8 rounded bg-gray-200 mr-3"></div>
+                                    )}
+                                    {p.name}
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{p.barcode || '-'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(p.base_price)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -126,7 +138,7 @@ export const ProductManager: React.FC = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-96 shadow-xl">
+                    <div className="bg-white rounded-lg p-6 w-96 shadow-xl max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold">{editingProduct ? 'Editar Producto' : 'Nuevo Producto'}</h3>
                             <button onClick={() => setIsModalOpen(false)}><X size={20} className="text-gray-400" /></button>
@@ -144,6 +156,12 @@ export const ProductManager: React.FC = () => {
                                 value={barcode}
                                 onChange={(e) => setBarcode(e.target.value)}
                                 placeholder="Opcional"
+                            />
+                            <Input
+                                label="URL de Imagen"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                placeholder="https://..."
                             />
                             <Input
                                 label="Precio"

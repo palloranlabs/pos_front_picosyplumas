@@ -16,6 +16,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
         name: '',
         description: '',
         barcode: '',
+        image_url: '',
         base_price: '',
     });
 
@@ -34,6 +35,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
                 name: formData.name,
                 description: formData.description || undefined,
                 barcode: formData.barcode || undefined,
+                image_url: formData.image_url || undefined,
                 base_price: parseFloat(formData.base_price),
                 is_active: true
             });
@@ -77,6 +79,16 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
                             value={formData.barcode}
                             onChange={handleChange}
                             placeholder="Escanee o escriba..."
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">URL de Imagen</label>
+                        <Input
+                            name="image_url"
+                            value={formData.image_url}
+                            onChange={handleChange}
+                            placeholder="https://..."
                         />
                     </div>
 

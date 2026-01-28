@@ -94,8 +94,17 @@ export const ProductGrid: React.FC = () => {
                                 !product.is_active && "opacity-50 pointer-events-none"
                             )}
                         >
+                            <div className="flex flex-col items-center">
+                                {product.image_url ? (
+                                    <img src={product.image_url} alt={product.name} className="h-24 w-full object-contain mb-2 rounded" />
+                                ) : (
+                                    <div className="h-24 w-full bg-gray-100 mb-2 rounded flex items-center justify-center text-gray-300">
+                                        <Search size={32} />
+                                    </div>
+                                )}
+                            </div>
                             <h3 className="font-bold text-gray-800 text-sm mb-1 line-clamp-2">{product.name}</h3>
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center mt-auto">
                                 <p className="text-brand-blue font-bold">{formatCurrency(product.base_price)}</p>
                                 {product.barcode && <span className="text-xs text-gray-400 font-mono">{product.barcode}</span>}
                             </div>

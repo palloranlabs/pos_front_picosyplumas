@@ -4,6 +4,7 @@ export interface Product {
     name: string;
     description?: string | null;
     barcode?: string | null;
+    image_url?: string | null;
     base_price: string; // COMES AS STRING
     is_active: boolean;
 }

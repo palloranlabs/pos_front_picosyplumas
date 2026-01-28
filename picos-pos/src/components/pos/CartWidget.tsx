@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useCartStore } from '../../stores/useCartStore';
 import { formatCurrency, parseDecimal } from '../../utils/currency';
 import { Button } from '../common/Button';
-import { Trash2, Percent } from 'lucide-react';
+import { Trash2, Percent, Eye } from 'lucide-react';
 import { DiscountModal } from './DiscountModal';
 import { PayModal } from './PayModal';
-
+import type { Product } from '../../types/models.types';
 export const CartWidget: React.FC = () => {
     const { items, removeItem, updateQuantity, getMetaData, clearCart } = useCartStore();
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+    const [viewImageProduct, setViewImageProduct] = useState<Product | null>(null);
     const [showPayModal, setShowPayModal] = useState(false);
 
     const { subtotal, total } = getMetaData();
@@ -58,6 +59,15 @@ export const CartWidget: React.FC = () => {
                                 <div className="flex flex-col items-end">
                                     <span className="font-bold text-gray-900">{formatCurrency(lineTotal)}</span>
                                     <div className="flex space-x-1 mt-1">
+                                        {item.product.image_url && (
+                                            <button
+                                                onClick={() => setViewImageProduct(item.product)}
+                                                className="p-1 text-gray-400 hover:text-brand-blue"
+                                                title="Ver Imagen"
+                                            >
+                                                <Eye size={14} />
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => setSelectedProductId(item.product.id)}
                                             className="p-1 text-gray-400 hover:text-brand-blue"
@@ -80,7 +90,7 @@ export const CartWidget: React.FC = () => {
                 )}
             </div>
 
-            {/* Footer Totals */}
+            {/* ... Footer ... */}
             <div className="p-4 bg-gray-50 border-t space-y-2">
                 <div className="flex justify-between text-sm text-gray-600">
                     <span>Subtotal</span>
@@ -101,6 +111,7 @@ export const CartWidget: React.FC = () => {
                 </Button>
             </div>
 
+            {/* Modals */}
             {selectedProductId && (
                 <DiscountModal
                     productId={selectedProductId}
@@ -113,6 +124,19 @@ export const CartWidget: React.FC = () => {
                     total={total}
                     onClose={() => setShowPayModal(false)}
                 />
+            )}
+
+            {viewImageProduct && (
+                <div
+                    className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] cursor-pointer"
+                    onClick={() => setViewImageProduct(null)}
+                >
+                    <div className="max-w-3xl max-h-[90vh] p-2 bg-white rounded-lg relative" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setViewImageProduct(null)} className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black text-white rounded-full"><Trash2 size={24} className="hidden" /><Eye size={24} className="hidden" />X</button>
+                        <img src={viewImageProduct.image_url!} alt={viewImageProduct.name} className="max-w-full max-h-[85vh] object-contain" />
+                        <p className="text-center font-bold mt-2">{viewImageProduct.name}</p>
+                    </div>
+                </div>
             )}
         </div>
     );
