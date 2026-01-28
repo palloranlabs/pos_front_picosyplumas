@@ -70,8 +70,8 @@ export const useCartStore = create<CartState>((set, get) => ({
             subtotal += itemTotal;
         });
 
-        // Tax Logic (Example 16%)
-        const tax = subtotal * 0.16;
+        // Tax Logic (0%)
+        const tax = 0;
         const total = subtotal + tax;
 
         return { subtotal, tax, total };

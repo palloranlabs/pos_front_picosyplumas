@@ -3,6 +3,7 @@ export interface Product {
     id: number;
     name: string;
     description?: string | null;
+    barcode?: string | null;
     base_price: string; // COMES AS STRING
     is_active: boolean;
 }

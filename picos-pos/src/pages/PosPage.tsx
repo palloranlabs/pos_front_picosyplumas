@@ -38,11 +38,11 @@ export const PosPage: React.FC = () => {
 
                 <div className="flex items-center space-x-3">
                     {isSessionOpen ? (
-                        <Button variant="danger" size="sm" onClick={() => setShowSessionModal('close')}>
+                        <Button variant="success" size="sm" onClick={() => setShowSessionModal('close')}>
                             <Power size={16} className="mr-2" /> Cerrar Turno
                         </Button>
                     ) : (
-                        <Button variant="primary" size="sm" onClick={() => setShowSessionModal('open')}>
+                        <Button variant="danger" size="sm" onClick={() => setShowSessionModal('open')}>
                             <Power size={16} className="mr-2" /> Abrir Turno
                         </Button>
                     )}

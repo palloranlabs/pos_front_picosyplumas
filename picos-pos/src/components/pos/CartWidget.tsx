@@ -11,7 +11,7 @@ export const CartWidget: React.FC = () => {
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
     const [showPayModal, setShowPayModal] = useState(false);
 
-    const { subtotal, tax, total } = getMetaData();
+    const { subtotal, total } = getMetaData();
 
     return (
         <div className="flex flex-col h-full bg-white">
@@ -86,10 +86,7 @@ export const CartWidget: React.FC = () => {
                     <span>Subtotal</span>
                     <span>{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                    <span>IVA (16%)</span>
-                    <span>{formatCurrency(tax)}</span>
-                </div>
+
                 <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t border-gray-200">
                     <span>Total</span>
                     <span>{formatCurrency(total)}</span>

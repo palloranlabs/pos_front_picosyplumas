@@ -22,8 +22,8 @@ export const Button: React.FC<ButtonProps> = ({
     const variants = {
         primary: "bg-brand-blue text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-blue",
         secondary: "bg-gray-100 text-gray-900 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:bg-gray-200 focus:ring-gray-500",
-        danger: "bg-brand-red text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-red",
-        success: "bg-brand-green text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-green",
+        danger: "bg-red-600 text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-red-600",
+        success: "bg-green-600 text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-green-600",
         warning: "bg-brand-yellow text-black shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:brightness-110 focus:ring-brand-yellow",
         ghost: "bg-transparent text-gray-700 hover:bg-gray-100 hover:text-black hover:shadow-sm focus:ring-gray-500",
     };

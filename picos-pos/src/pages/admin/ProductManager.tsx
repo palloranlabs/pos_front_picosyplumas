@@ -14,6 +14,7 @@ export const ProductManager: React.FC = () => {
 
     // Form State
     const [name, setName] = useState('');
+    const [barcode, setBarcode] = useState('');
     const [price, setPrice] = useState('');
     const [password, setPassword] = useState(''); // Master Password
     const [error, setError] = useState('');
@@ -31,6 +32,7 @@ export const ProductManager: React.FC = () => {
     const handleEdit = (p: Product) => {
         setEditingProduct(p);
         setName(p.name);
+        setBarcode(p.barcode || '');
         setPrice(p.base_price);
         setPassword('');
         setError('');
@@ -40,6 +42,7 @@ export const ProductManager: React.FC = () => {
     const handleCreate = () => {
         setEditingProduct(null);
         setName('');
+        setBarcode('');
         setPrice('');
         setPassword('');
         setError('');
@@ -56,9 +59,6 @@ export const ProductManager: React.FC = () => {
         setIsLoading(true);
         try {
             if (editingProduct) {
-                // For update, we need master password check in frontend logic OR API might verify it.
-                // API definition: updateProduct payload has master_password.
-                // "Updating a product requires Master Password".
                 if (!password) {
                     setError("Master Password is required for updates");
                     setIsLoading(false);
@@ -66,14 +66,14 @@ export const ProductManager: React.FC = () => {
                 }
                 await updateProduct(editingProduct.id, {
                     name,
+                    barcode: barcode || undefined,
                     base_price: price,
                     master_password: password
                 });
             } else {
-                // Create usually doesn't need master password based on manual logic ("Update: PUT ... Crucial: Updating requires Master Password"). 
-                // Create: POST /products/. Manual doesn't explicitly say create needs it, but let's assume not given the text.
                 await createProduct({
                     name,
+                    barcode: barcode || undefined,
                     base_price: price,
                     is_active: true
                 });
@@ -102,6 +102,7 @@ export const ProductManager: React.FC = () => {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
@@ -110,6 +111,7 @@ export const ProductManager: React.FC = () => {
                         {products.map(p => (
                             <tr key={p.id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{p.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{p.barcode || '-'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(p.base_price)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button onClick={() => handleEdit(p)} className="text-brand-blue hover:text-brand-navy">
@@ -136,6 +138,12 @@ export const ProductManager: React.FC = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
+                            />
+                            <Input
+                                label="Código de Barras"
+                                value={barcode}
+                                onChange={(e) => setBarcode(e.target.value)}
+                                placeholder="Opcional"
                             />
                             <Input
                                 label="Precio"
