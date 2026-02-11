@@ -41,3 +41,10 @@ export interface RegisterUserRequest {
 export const registerUser = async (userData: RegisterUserRequest): Promise<void> => {
     await api.post('/api/v1/auth/register', userData);
 };
+
+export const refreshToken = async (token: string): Promise<AuthResponse> => {
+    const { data } = await api.post<AuthResponse>('/api/v1/auth/refresh-token', {
+        refresh_token: token
+    });
+    return data;
+};

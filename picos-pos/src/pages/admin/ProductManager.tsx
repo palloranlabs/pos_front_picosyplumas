@@ -15,15 +15,46 @@ export const ProductManager: React.FC = () => {
     // Form State
     const [name, setName] = useState('');
     const [barcode, setBarcode] = useState('');
+    const [skuPrefix, setSkuPrefix] = useState('');
+    const [skuBody, setSkuBody] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [price, setPrice] = useState('');
+    const [aplicaIva, setAplicaIva] = useState(false);
     const [password, setPassword] = useState(''); // Master Password
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    // Calculated IVA
+    const [calculatedIva, setCalculatedIva] = useState('0.00');
+
     useEffect(() => {
         loadProducts();
     }, []);
+
+    // SKU Auto-Gen
+    useEffect(() => {
+        if (barcode && barcode.length >= 6 && !editingProduct) {
+            const last6 = barcode.slice(-6);
+            const body = last6.slice(0, -1);
+            setSkuBody(body);
+        }
+    }, [barcode, editingProduct]);
+
+    // Calculate IVA when price or aplicaIva changes
+    useEffect(() => {
+        if (aplicaIva && price) {
+            const priceNum = parseFloat(price);
+            if (!isNaN(priceNum)) {
+                const base = priceNum / 1.16;
+                const tax = priceNum - base;
+                setCalculatedIva(tax.toFixed(2));
+            } else {
+                setCalculatedIva('0.00');
+            }
+        } else {
+            setCalculatedIva('0.00');
+        }
+    }, [price, aplicaIva]);
 
     const loadProducts = async () => {
         const data = await getProducts(0, 500);
@@ -34,8 +65,13 @@ export const ProductManager: React.FC = () => {
         setEditingProduct(p);
         setName(p.name);
         setBarcode(p.barcode || '');
+        // For edit, we might want to split existing SKU if possible or just leave blank/manual
+        // Simple approach: Set entire SKU as body or just leave empty to let user edit
+        setSkuPrefix('');
+        setSkuBody(p.sku || '');
         setImageUrl(p.image_url || '');
         setPrice(p.base_price);
+        setAplicaIva(p.aplica_iva);
         setPassword('');
         setError('');
         setIsModalOpen(true);
@@ -45,8 +81,11 @@ export const ProductManager: React.FC = () => {
         setEditingProduct(null);
         setName('');
         setBarcode('');
+        setSkuPrefix('');
+        setSkuBody('');
         setImageUrl('');
         setPrice('');
+        setAplicaIva(false);
         setPassword('');
         setError('');
         setIsModalOpen(true);
@@ -60,6 +99,8 @@ export const ProductManager: React.FC = () => {
         }
 
         setIsLoading(true);
+        const finalSku = (skuPrefix || skuBody) ? `${skuPrefix}${skuPrefix && skuBody ? ' - ' : ''}${skuBody}` : undefined;
+
         try {
             if (editingProduct) {
                 if (!password) {
@@ -70,17 +111,21 @@ export const ProductManager: React.FC = () => {
                 await updateProduct(editingProduct.id, {
                     name,
                     barcode: barcode || undefined,
+                    sku: finalSku, // Update SKU
                     image_url: imageUrl || undefined,
                     base_price: price,
+                    aplica_iva: aplicaIva,
                     master_password: password
                 });
             } else {
                 await createProduct({
                     name,
                     barcode: barcode || undefined,
+                    sku: finalSku, // New SKU
                     image_url: imageUrl || undefined,
                     base_price: price,
-                    is_active: true
+                    is_active: true,
+                    aplica_iva: aplicaIva
                 });
             }
             setIsModalOpen(false);
@@ -107,6 +152,7 @@ export const ProductManager: React.FC = () => {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
                             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
@@ -123,6 +169,7 @@ export const ProductManager: React.FC = () => {
                                     )}
                                     {p.name}
                                 </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{p.sku || '-'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{p.barcode || '-'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(p.base_price)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -157,6 +204,22 @@ export const ProductManager: React.FC = () => {
                                 onChange={(e) => setBarcode(e.target.value)}
                                 placeholder="Opcional"
                             />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <Input
+                                    label="SKU Prefijo"
+                                    value={skuPrefix}
+                                    onChange={(e) => setSkuPrefix(e.target.value)}
+                                    placeholder="Ej. PRE"
+                                />
+                                <Input
+                                    label="SKU Cuerpo"
+                                    value={skuBody}
+                                    onChange={(e) => setSkuBody(e.target.value)}
+                                    placeholder="Auto o Manual"
+                                />
+                            </div>
+
                             <Input
                                 label="URL de Imagen"
                                 value={imageUrl}
@@ -170,6 +233,28 @@ export const ProductManager: React.FC = () => {
                                 required
                                 placeholder="0.00"
                             />
+
+                            <div className="flex items-center gap-2 my-4">
+                                <input
+                                    type="checkbox"
+                                    id="aplica_iva_pm"
+                                    checked={aplicaIva}
+                                    onChange={(e) => setAplicaIva(e.target.checked)}
+                                    className="h-4 w-4 rounded border-gray-300 text-brand-blue focus:ring-brand-blue"
+                                />
+                                <label htmlFor="aplica_iva_pm" className="text-sm font-medium text-gray-700">
+                                    Aplica IVA (Precio incluye 16% de impuesto)
+                                </label>
+                            </div>
+
+                            {aplicaIva && (
+                                <Input
+                                    label="IVA Calculado (16%)"
+                                    value={`$${calculatedIva}`}
+                                    disabled
+                                    className="bg-gray-50 text-gray-600"
+                                />
+                            )}
 
                             {editingProduct && (
                                 <div className="bg-yellow-50 p-3 rounded border border-yellow-200">

@@ -29,7 +29,8 @@ export const ProductGrid: React.FC = () => {
             const lower = searchTerm.toLowerCase();
             setFilteredProducts(products.filter(p =>
                 p.name.toLowerCase().includes(lower) ||
-                (p.barcode && p.barcode.toLowerCase().includes(lower))
+                (p.barcode && p.barcode.toLowerCase().includes(lower)) ||
+                (p.sku && p.sku.toLowerCase().includes(lower))
             ));
         }
     }, [searchTerm, products]);
@@ -40,7 +41,10 @@ export const ProductGrid: React.FC = () => {
                 addItem(filteredProducts[0]);
                 setSearchTerm('');
             } else if (filteredProducts.length > 1) {
-                const exactBarcodeMatch = filteredProducts.find(p => p.barcode?.toLowerCase() === searchTerm.toLowerCase());
+                const exactBarcodeMatch = filteredProducts.find(p =>
+                    p.barcode?.toLowerCase() === searchTerm.toLowerCase() ||
+                    p.sku?.toLowerCase() === searchTerm.toLowerCase()
+                );
                 if (exactBarcodeMatch) {
                     addItem(exactBarcodeMatch);
                     setSearchTerm('');

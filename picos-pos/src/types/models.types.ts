@@ -4,9 +4,11 @@ export interface Product {
     name: string;
     description?: string | null;
     barcode?: string | null;
+    sku?: string | null;
     image_url?: string | null;
     base_price: string; // COMES AS STRING
     is_active: boolean;
+    aplica_iva: boolean;
 }
 
 // Sale Item
@@ -23,13 +25,15 @@ export interface SaleItem {
 // Sale (Ticket)
 export interface Sale {
     id: number;
+    username: string;
     ticket_number: string;
     subtotal: string;
     tax_amount: string;
     total_amount: string;
-    payment_method: 'cash' | 'card' | 'mixed';
+    payment_method: 'cash' | 'card' | 'transfer' | 'mixed';
     cash_received: string;
     card_amount: string;
+    transfer_amount: string;
     change_given: string;
     is_refunded: boolean;
     created_at: string; // ISO Date
@@ -51,10 +55,24 @@ export interface CashSessionCloseResponse {
     closing_balance: string;
     total_sales_cash: string;
     total_sales_card: string;
+    total_sales_transfer: string;
     total_refunded_cash: string;
     total_refunded_card: string;
+    total_refunded_transfer: string;
     expected_cash_in_drawer: string;
     actual_cash_in_drawer: string;
     discrepancy: string;
     has_discrepancy: boolean;
+}
+
+export interface AllowedIP {
+    id: number;
+    ip_address: string;
+    nickname: string | null;
+    created_at: string;
+}
+
+export interface AllowedIPCreate {
+    ip_address: string;
+    nickname?: string;
 }

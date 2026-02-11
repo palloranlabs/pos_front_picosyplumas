@@ -18,7 +18,44 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
         barcode: '',
         image_url: '',
         base_price: '',
+        aplica_iva: false,
     });
+
+    // SKU State
+    const [skuPrefix, setSkuPrefix] = useState('');
+    const [skuBody, setSkuBody] = useState('');
+
+    // Calculated IVA
+    const [calculatedIva, setCalculatedIva] = useState('0.00');
+
+    // Auto-generate SKU Body from Barcode
+    React.useEffect(() => {
+        if (formData.barcode && formData.barcode.length >= 6) {
+            // Last 6 digits, remove the last one (check digit often) -> 5 digits
+            const last6 = formData.barcode.slice(-6);
+            const body = last6.slice(0, -1);
+            setSkuBody(body);
+        }
+    }, [formData.barcode]);
+
+    // Calculate IVA when price or aplica_iva changes
+    React.useEffect(() => {
+        if (formData.aplica_iva && formData.base_price) {
+            const price = parseFloat(formData.base_price);
+            if (!isNaN(price)) {
+                // If aplica_iva is true, price includes tax (116%)
+                // base = price / 1.16
+                // tax = price - base
+                const base = price / 1.16;
+                const tax = price - base;
+                setCalculatedIva(tax.toFixed(2));
+            } else {
+                setCalculatedIva('0.00');
+            }
+        } else {
+            setCalculatedIva('0.00');
+        }
+    }, [formData.base_price, formData.aplica_iva]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -30,14 +67,18 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
         setError(null);
         setIsLoading(true);
 
+        const finalSku = (skuPrefix || skuBody) ? `${skuPrefix}${skuPrefix && skuBody ? ' - ' : ''}${skuBody}` : undefined;
+
         try {
             await createProduct({
                 name: formData.name,
                 description: formData.description || undefined,
                 barcode: formData.barcode || undefined,
+                sku: finalSku,
                 image_url: formData.image_url || undefined,
                 base_price: parseFloat(formData.base_price),
-                is_active: true
+                is_active: true,
+                aplica_iva: formData.aplica_iva
             });
             onSuccess();
         } catch (err) {
@@ -82,6 +123,25 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
                         />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">SKU Prefijo</label>
+                            <Input
+                                value={skuPrefix}
+                                onChange={(e) => setSkuPrefix(e.target.value)}
+                                placeholder="Ej. PRE"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">SKU Cuerpo (Numérico)</label>
+                            <Input
+                                value={skuBody}
+                                onChange={(e) => setSkuBody(e.target.value)}
+                                placeholder="Auto o Manual"
+                            />
+                        </div>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">URL de Imagen</label>
                         <Input
@@ -114,6 +174,30 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({ onClose,
                             placeholder="Opcional"
                         />
                     </div>
+
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            id="aplica_iva"
+                            checked={formData.aplica_iva}
+                            onChange={(e) => setFormData(prev => ({ ...prev, aplica_iva: e.target.checked }))}
+                            className="h-4 w-4 rounded border-gray-300 text-brand-blue focus:ring-brand-blue"
+                        />
+                        <label htmlFor="aplica_iva" className="text-sm font-medium text-gray-700">
+                            Aplica IVA (Precio incluye 16% de impuesto)
+                        </label>
+                    </div>
+
+                    {formData.aplica_iva && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">IVA Calculado (16%)</label>
+                            <Input
+                                value={`$${calculatedIva}`}
+                                disabled
+                                className="bg-gray-50 text-gray-600"
+                            />
+                        </div>
+                    )}
 
                     <div className="flex justify-end pt-2">
                         <Button type="button" variant="secondary" onClick={onClose} className="mr-2">

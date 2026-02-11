@@ -11,10 +11,11 @@ export const TicketTemplate: React.FC<Props> = ({ sale }) => {
 
     return (
         <div id="printable-area" className="hidden print:block fixed top-0 left-0 w-[50mm] bg-white text-black font-mono text-[11px] leading-tight">
-            <div className="text-center mb-2">
-                <h2 className="font-bold text-sm">Picos y Plumas</h2>
+            <div className="text-center mb-2 flex flex-col items-center">
+                <img src="/logo_ticket.png" alt="Logo" className="w-16 grayscale mb-1" />
                 <p>Ticket: #{sale.ticket_number}</p>
                 <p>{new Date(sale.created_at).toLocaleString()}</p>
+                <p className="font-bold">Atendido por: {sale.username}</p>
             </div>
 
             <hr className="border-dashed border-black my-1" />

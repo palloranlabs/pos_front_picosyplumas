@@ -5,10 +5,13 @@ import { PosPage } from './pages/PosPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { ProductManager } from './pages/admin/ProductManager';
+import IpManager from './pages/admin/IpManager';
+import TokenValidator from './components/TokenValidator';
 
 function App() {
   return (
     <BrowserRouter>
+      <TokenValidator />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -16,6 +19,7 @@ function App() {
           <Route path="/pos" element={<PosPage />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="products" element={<ProductManager />} />
+            <Route path="ips" element={<IpManager />} />
             <Route index element={<Navigate to="products" replace />} />
           </Route>
           <Route path="/" element={<Navigate to="/pos" replace />} />

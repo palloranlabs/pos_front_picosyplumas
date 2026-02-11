@@ -6,7 +6,7 @@ export const getProducts = async (skip = 0, limit = 100): Promise<Product[]> => 
     return data;
 };
 
-export const createProduct = async (product: { name: string; description?: string; barcode?: string; image_url?: string; base_price: number | string; is_active?: boolean }): Promise<Product> => {
+export const createProduct = async (product: { name: string; description?: string; barcode?: string; sku?: string; image_url?: string; base_price: number | string; is_active?: boolean; aplica_iva?: boolean }): Promise<Product> => {
     const { data } = await api.post<Product>('/api/v1/products/', product);
     return data;
 };

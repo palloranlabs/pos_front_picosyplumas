@@ -35,6 +35,11 @@ export const AdminLayout: React.FC = () => {
                         <span>Productos</span>
                     </Link>
 
+                    <Link to="/admin/ips" className="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1 hover:shadow-md bg-gray-50 text-gray-800 font-medium">
+                        <ShieldAlert size={20} />
+                        <span>IPs Permitidas</span>
+                    </Link>
+
                     <button
                         onClick={() => setIsChangePasswordModalOpen(true)}
                         className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1 hover:shadow-md text-gray-700 font-medium"
