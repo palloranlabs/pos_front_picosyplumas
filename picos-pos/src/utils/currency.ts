@@ -1,5 +1,7 @@
 export const parseDecimal = (value: string | number): number => {
-    return typeof value === 'string' ? parseFloat(value) : value;
+    if (typeof value === 'number') return value;
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
 };
 
 export const formatCurrency = (value: string | number): string => {
